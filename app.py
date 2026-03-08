@@ -39,11 +39,21 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-    /* Global Typography & Background */
-    html, body, [class*="css"] {
+    /* Global Typography & Background - Force Light Mode */
+    html, body, [class*="css"], .stApp {
         font-family: 'Inter', sans-serif;
-        background-color: #ffffff;
-        color: #111827;
+        background-color: #ffffff !important;
+        color: #111827 !important;
+    }
+
+    /* Animation Canvas fixes */
+    #canvas {
+        z-index: 0 !important;
+    }
+    
+    /* Bring content forward over canvas */
+    .block-container {
+        z-index: 1 !important;
     }
 
     /* Hide Streamlit Header & Footer */
