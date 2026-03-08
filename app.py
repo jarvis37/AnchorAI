@@ -40,20 +40,26 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     /* Global Typography & Background - Force Light Mode */
-    html, body, [class*="css"], .stApp {
+    .stApp {
         font-family: 'Inter', sans-serif;
         background-color: #ffffff !important;
+    }
+    
+    /* Aggressively target all text to ensure it's visible on white background */
+    p, h1, h2, h3, h4, h5, h6, span, div, label {
         color: #111827 !important;
     }
 
     /* Animation Canvas fixes */
     #canvas {
         z-index: 0 !important;
+        pointer-events: auto !important;
     }
     
-    /* Bring content forward over canvas */
+    /* Make the main block container transparent so canvas shows through */
     .block-container {
         z-index: 1 !important;
+        background-color: transparent !important;
     }
 
     /* Hide Streamlit Header & Footer */
@@ -63,10 +69,9 @@ st.markdown("""
 
     /* Main Title Styling (Antigravity-inspired) */
     .hero-title {
-        font-family: 'Inter', sans-serif;
-        font-weight: 800;
-        font-size: 3.5rem;
-        color: #111827;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 800 !important;
+        font-size: 3.5rem !important;
         text-align: center;
         letter-spacing: -0.03em;
         line-height: 1.1;
@@ -75,16 +80,17 @@ st.markdown("""
     }
     
     .hero-title .gradient-text {
-        background: linear-gradient(90deg, #4285f4, #ea4335, #fbbc05, #34a853);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        background: linear-gradient(90deg, #4285f4, #ea4335, #fbbc05, #34a853) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
     }
 
     .subtitle {
-        color: #4b5563;
-        font-size: 1.1rem;
+        color: #4b5563 !important;
+        font-size: 1.1rem !important;
         text-align: center;
-        font-weight: 400;
+        font-weight: 400 !important;
         margin-bottom: 3rem;
         max-width: 650px;
         margin-left: auto;
@@ -94,15 +100,18 @@ st.markdown("""
 
     /* Clean Chat Messages */
     .stChatMessage {
-        background-color: transparent !important;
-        border: none !important;
-        padding: 1rem 0rem !important;
+        background-color: #f8f9fa !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 12px;
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
     }
 
     /* Input Box Styling */
     .stChatInputContainer {
         border-radius: 9999px !important;
         border: 1px solid #e5e7eb !important;
+        background-color: #ffffff !important;
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
         padding-left: 1rem !important;
         max-width: 700px;
