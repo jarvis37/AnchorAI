@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -29,31 +30,73 @@ Keep your answers concise, clear, and highly relevant to the provided context.
 st.set_page_config(
     page_title="AnchorAI",
     page_icon="⚓",
-    layout="wide"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-# Custom Styling for Premium Feel
+# Custom Styling for Premium Feel (Antigravity Aesthetic)
 st.markdown("""
 <style>
-    .main-title {
-        background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    /* Global Typography & Background */
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+        background-color: #ffffff;
+        color: #111827;
+    }
+
+    /* Hide Streamlit Header & Footer */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display: none;}
+
+    /* Main Title Styling (Antigravity-inspired) */
+    .hero-title {
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+        font-size: 3.5rem;
+        color: #111827;
+        text-align: center;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-title .gradient-text {
+        background: linear-gradient(90deg, #4285f4, #ea4335, #fbbc05, #34a853);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-weight: 800;
-        margin-bottom: 0px;
     }
-    
+
     .subtitle {
-        color: #64748b;
+        color: #4b5563;
         font-size: 1.1rem;
-        margin-top: -10px;
-        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 400;
+        margin-bottom: 3rem;
+        max-width: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.5;
     }
-    
-    /* User Message Styling */
-    .stChatMessage[data-testid="stChatMessage"]:nth-child(even) {
-        background-color: transparent;
+
+    /* Clean Chat Messages */
+    .stChatMessage {
+        background-color: transparent !important;
+        border: none !important;
+        padding: 1rem 0rem !important;
+    }
+
+    /* Input Box Styling */
+    .stChatInputContainer {
+        border-radius: 9999px !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05) !important;
+        padding-left: 1rem !important;
+        max-width: 700px;
+        margin: 0 auto;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -137,8 +180,112 @@ with st.sidebar:
         st.rerun()
 
 # Main Window
-st.markdown("<h1 class='main-title'>AnchorAI Chat</h1>", unsafe_allow_html=True)
-st.markdown("<p class='subtitle'>Ask questions directly against your stored Markdown notes.</p>", unsafe_allow_html=True)
+
+# Inject Particle Animation
+st.components.v1.html("""
+<canvas id="canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray = [];
+    const colors = ['#4285f4', '#ea4335', '#fbbc05', '#34a853'];
+
+    const mouse = {
+        x: null,
+        y: null,
+        radius: 100
+    }
+
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    window.addEventListener('resize', function() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    class Particle {
+        constructor(x, y, dx, dy, size, color) {
+            this.x = x;
+            this.y = y;
+            this.dx = dx;
+            this.dy = dy;
+            this.size = size;
+            this.color = color;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+
+        update() {
+            if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+                this.dx = -this.dx;
+            }
+            if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+                this.dy = -this.dy;
+            }
+
+            this.x += this.dx;
+            this.y += this.dy;
+
+            // Interactivity
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < mouse.radius) {
+                const forceDirectionX = dx / distance;
+                const forceDirectionY = dy / distance;
+                const maxDistance = mouse.radius;
+                const force = (maxDistance - distance) / maxDistance;
+                const directionX = forceDirectionX * force * 5;
+                const directionY = forceDirectionY * force * 5;
+                
+                this.x -= directionX;
+                this.y -= directionY;
+            }
+
+            this.draw();
+        }
+    }
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 3) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let dx = (Math.random() - 0.5) * 2;
+            let dy = (Math.random() - 0.5) * 2;
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            particlesArray.push(new Particle(x, y, dx, dy, size, color));
+        }
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+    }
+
+    init();
+    animate();
+</script>
+""", height=0)
+
+st.markdown("<h1 class='hero-title'>Experience liftoff with your<br>next-generation <span class='gradient-text'>assistant</span></h1>", unsafe_allow_html=True)
+st.markdown("<p class='subtitle'>A highly intuitive Retrieval-Augmented Generation system that securely grounds every conversation directly in your personal knowledge base.</p>", unsafe_allow_html=True)
 
 
 # Render Chat History
