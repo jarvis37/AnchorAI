@@ -292,7 +292,7 @@ st.components.v1.html("""
     init();
     animate();
 </script>
-""", height=0)
+""", height=800)
 
 st.markdown("<h1 class='hero-title'>Experience liftoff with your<br>next-generation <span class='gradient-text'>assistant</span></h1>", unsafe_allow_html=True)
 st.markdown("<p class='subtitle'>A highly intuitive Retrieval-Augmented Generation system that securely grounds every conversation directly in your personal knowledge base.</p>", unsafe_allow_html=True)
